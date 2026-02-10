@@ -16,12 +16,14 @@ def processar_gasto_com_ia(texto_usuario):
     Analise a mensagem do usuário e extraia: 
     1. O item comprado.
     2. O valor (converta para número).
-    3. A categoria (Alimentação, Transporte, Lazer, Contas, Outros).
+    3. A data e hora.
+    4. A categoria (Alimentação, Transporte, Lazer, Contas, Outros).
+    5. SE INFORMADO: anote tambem a forma de pagamento, caso não haja nada, deixe em branco
     
-    Retorne APENAS um JSON puro, sem crase, sem markdown. Exemplo:
-    {"item": "pizza", "valor": 50.00, "categoria": "Alimentação"}
+    Retorne uma mensagem de confirmação falando que anotou os gastos com sucesso
     
-    Se não for um gasto, retorne: {"erro": "não identifiquei gasto"}
+    
+    Se não for um gasto, retorne: "não identifiquei gasto"
     """
 
     messages = [
@@ -51,7 +53,7 @@ def bot():
     resp = MessagingResponse()
     msg = resp.message()
     
-    msg.body(f"✅ Anotei:\n{resultado_ia}")
+    msg.body(f"{resultado_ia}")
 
     return str(resp)
 
