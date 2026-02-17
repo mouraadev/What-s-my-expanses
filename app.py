@@ -68,12 +68,10 @@ def gerar_planilha(user_id):
     if df.empty:
         return None
 
-    # Adiciona uma linha de TOTAL
     total = df['valor'].sum()
     linha_total = pd.DataFrame([['', '', '', 'TOTAL MENSAL', total]], columns=df.columns)
     df = pd.concat([df, linha_total], ignore_index=True)
 
-    # Salva o arquivo
     nome_arquivo = f"extrato_{user_id}.xlsx"
     df.to_excel(nome_arquivo, index=False)
     
@@ -157,23 +155,17 @@ def bot():
     resp = MessagingResponse()
     msg = resp.message()
 
-    # --- VERIFICAÇÕES DE COMANDOS ---
-    
-    # 1. Verifica se a IA detectou pedido de relatório
     if "CMD_GERAR_RELATORIO" in resposta_ia:
         arquivo = gerar_planilha(user_id)
         if arquivo:
             msg.body("Aqui está a sua planilha com o total do mês! 📊")
-            # Nota: O WhatsApp não envia arquivos locais direto sem URL pública no Twilio gratuito.
-            # Aqui estamos apenas avisando que foi gerado. No console você verá o arquivo criado na pasta.
+    
             print(f"Arquivo gerado: {arquivo}") 
         else:
             msg.body("Você ainda não tem gastos registrados para gerar planilha.")
             
-    # 2. Verifica se a IA mandou um JSON de gasto (tem a tag ###JSON###)
     elif "###JSON###" in resposta_ia:
         try:
-            # Separa o texto amigável do JSON técnico
             texto_amigavel = resposta_ia.split("###JSON###")[0]
             json_str = resposta_ia.split("###JSON###")[1].split("###END###")[0]
             
@@ -185,9 +177,8 @@ def bot():
             else:
                 msg.body(f"{texto_amigavel}\n❌ Erro ao salvar.")
         except:
-             msg.body(resposta_ia) # Se der erro no parse, manda a resposta original
+             msg.body(resposta_ia) 
              
-    # 3. Conversa normal
     else:
         msg.body(resposta_ia)
 
