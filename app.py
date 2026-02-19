@@ -57,10 +57,8 @@ def salvar_no_banco(user_id, dados_json):
         return False
 
 def gerar_planilha(user_id):
-    """Gera um Excel com os gastos do usuário."""
     conn = sqlite3.connect('gastos.db')
     
-    # Lê os dados do banco para o Pandas
     query = f"SELECT data, item, categoria, pagamento, valor FROM transacoes WHERE user_id = '{user_id}'"
     df = pd.read_sql_query(query, conn)
     conn.close()
@@ -78,9 +76,6 @@ def gerar_planilha(user_id):
     return nome_arquivo
 
 def obter_contexto_temporal(user_id):
-    """
-    Define se é inicio de conversa ou continuação.
-    """
     fuso_brasil = pytz.timezone('America/Sao_Paulo')
     agora = datetime.datetime.now(fuso_brasil)
     
@@ -158,7 +153,7 @@ def bot():
     if "CMD_GERAR_RELATORIO" in resposta_ia:
         arquivo = gerar_planilha(user_id)
         if arquivo:
-            msg.body("Aqui está a sua planilha com o total do mês! 📊")
+            msg.body("Aqui está a sua planilha com o total do mês! ")
     
             print(f"Arquivo gerado: {arquivo}") 
         else:
@@ -173,9 +168,9 @@ def bot():
             salvou = salvar_no_banco(user_id, dados)
             
             if salvou:
-                msg.body(f"{texto_amigavel}\n✅ *Salvo no banco de dados!*")
+                msg.body(f"{texto_amigavel}\n *Salvo no banco de dados!*")
             else:
-                msg.body(f"{texto_amigavel}\n❌ Erro ao salvar.")
+                msg.body(f"{texto_amigavel}\n Erro ao salvar.")
         except:
              msg.body(resposta_ia) 
              
